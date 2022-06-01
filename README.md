@@ -6,4 +6,4 @@ A simple demo for react login authentication with oauth2 and passwordjs.
 
 - React login authentication with social media.
 - React oauth using passportjs.
-- React, Node.js auth using google, facebook and github credientials.
+- React, Node, Express auth using google, facebook and github credientials.
