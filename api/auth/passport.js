@@ -4,57 +4,62 @@ import GithubStrategy from "passport-github2";
 import passport from "passport";
 import dotenv from "dotenv";
 
-GoogleStrategy.Strategy;
-FacebookStrategy.Strategy;
-GithubStrategy.Strategy;
-
 dotenv.config();
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
 
+// Google strategy
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      clientID: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:5000/auth/google/callback",
     },
-    function (accessToken, refreshToken, profile, done) {
+
+    function (request, accessToken, refreshToken, profile, done) {
+      /*  User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        return cb(err, user); 
+      }); */
       done(null, profile);
     }
   )
 );
 
+/* // Facebook strategy
 passport.use(
   new FacebookStrategy(
     {
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "/auth/facebook/callback",
+      callbackURL: "http://localhost:5000/auth/facebook/callback",
     },
+
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
     }
   )
 );
 
+// Github strategy
 passport.use(
   new GithubStrategy(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "/auth/github/callback",
+      callbackURL: "http://localhost:5000/auth/github/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
     }
   )
-);
+); */
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
+passport.serializeUser = (user, done) => {
+  return done(null, user);
+};
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+passport.deserializeUser = (user, done) => {
+  return done(null, user);
+};
 
 export default passport;
