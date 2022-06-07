@@ -1,13 +1,20 @@
 import GoogleStrategy from "passport-google-oauth20";
-import FacebookStrategy from "passport-facebook";
 import GithubStrategy from "passport-github2";
+import FacebookStrategy from "passport-facebook";
 import passport from "passport";
 import dotenv from "dotenv";
 
 dotenv.config();
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
 
-// Google strategy
+const {
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  FACEBOOK_APP_ID,
+  FACEBOOK_APP_SECRET,
+  GITHUB_CLIENT_ID,
+  GITHUB_CLIENT_SECRET,
+} = process.env;
+
 passport.use(
   new GoogleStrategy(
     {
@@ -15,51 +22,42 @@ passport.use(
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: "http://localhost:5000/auth/google/callback",
     },
-
-    function (request, accessToken, refreshToken, profile, done) {
-      /*  User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        return cb(err, user); 
-      }); */
-      done(null, profile);
-    }
-  )
-);
-
-/* // Facebook strategy
-passport.use(
-  new FacebookStrategy(
-    {
-      clientID: process.env.FACEBOOK_APP_ID,
-      clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: "http://localhost:5000/auth/facebook/callback",
-    },
-
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
     }
   )
 );
 
-// Github strategy
 passport.use(
   new GithubStrategy(
     {
-      clientID: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/github/callback",
+      clientID: GITHUB_CLIENT_ID,
+      clientSecret: GITHUB_CLIENT_SECRET,
+      callbackURL: "/auth/github/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
     }
   )
-); */
+);
 
-passport.serializeUser = (user, done) => {
-  return done(null, user);
-};
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: FACEBOOK_APP_ID,
+      clientSecret: FACEBOOK_APP_SECRET,
+      callbackURL: "/auth/facebook/callback",
+    },
+    function (accessToken, refreshToken, profile, done) {
+      done(null, profile);
+    }
+  )
+);
 
-passport.deserializeUser = (user, done) => {
-  return done(null, user);
-};
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
 
-export default passport;
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});

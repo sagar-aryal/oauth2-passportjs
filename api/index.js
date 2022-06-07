@@ -1,20 +1,15 @@
 import express from "express";
-import session from "express-session";
-import cors from "cors";
 import passport from "passport";
+import cors from "cors";
+import cookieSession from "cookie-session";
 
+import "./passport.js";
 import authRoute from "./auth/route.js";
-import { isLoggedIn } from "./middleware/isLoggedIn.js";
 
 const app = express();
 
 app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true },
-  })
+  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
 );
 
 app.use(passport.initialize());
@@ -28,7 +23,7 @@ app.use(
   })
 );
 
-app.use("/auth", isLoggedIn, authRoute);
+app.use("/auth", authRoute);
 
 app.listen("5000", () => {
   console.log("Server is running!");
